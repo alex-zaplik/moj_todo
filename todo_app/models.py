@@ -5,34 +5,40 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
-class Table(models.Model):
+class NamedModel(models.Model):
+    """
+    A model that has a name that is used to represent it (in __str__)
+    """
+
+    class Meta:
+        abstract = True
+
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Table(NamedModel):
     """
     A todo table that contains columns used for organising task.
     Each table has it's own name (doesn't have to be unique) and
     a list of users that can access it.
     """
 
-    name = models.CharField(max_length=100)
     users = models.ManyToManyField(User)
 
-    def __str__(self):
-        return self.name
 
-
-class Column(models.Model):
+class Column(NamedModel):
     """
     Each column belongs to a single table and has a name that doen't
     have to be unique. It is a container for tasks.
     """
 
     table = models.ForeignKey(Table, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
 
 
-class Task(models.Model):
+class Task(NamedModel):
     """
     A single task describes what has to be done via a name,
     a description and a deadline. More fields will probably be
@@ -40,7 +46,6 @@ class Task(models.Model):
     """
 
     column = models.ForeignKey(Column, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
     description = models.TextField()
     deadline = models.DateField(blank=True)
     done = models.BooleanField(default=False)
@@ -55,7 +60,3 @@ class Task(models.Model):
         now = timezone.now()
         near = now + datetime.timedelta(days=1) >= self.deadline
         return near and not self.done
-
-
-    def __str__(self):
-        return self.name
