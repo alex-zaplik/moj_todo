@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Shop Homepage - Start Bootstrap Template</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3">
+        <h1 class="my-4">Nasze TO-DO</h1>
+      </div>
+      <div class="col-lg-9">
+        <div class="row">
+		{% for task in task_list %}
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+              <div class="card-body">
+                <h4 class="card-title">
+                  <a href="#">{{ task.name }}</a>
+                </h4>
+                <h5>{{ task.deadline }}</h5>
+                <p class="card-text">{{ task.description }}</p>
+              </div>
+            </div>
+          </div>
+		{% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
