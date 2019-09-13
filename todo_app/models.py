@@ -47,7 +47,7 @@ class Task(NamedModel):
 
     column = models.ForeignKey(Column, on_delete=models.CASCADE)
     description = models.TextField()
-    deadline = models.DateField(blank=True)
+    deadline = models.DateField(null=True, blank=True)
     done = models.BooleanField(default=False)
 
     def is_near_to_deadline(self):

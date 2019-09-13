@@ -19,19 +19,21 @@
       </div>
       <div class="col-lg-9">
         <div class="row">
-		{% for task in task_list %}
+		    {% for task in task_list %}
           <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100">
               <div class="card-body">
                 <h4 class="card-title">
                   <a href="#">{{ task.name }}</a>
                 </h4>
+                {% if task.deadline %}
                 <h5>{{ task.deadline }}</h5>
+                {% endif %}
                 <p class="card-text">{{ task.description }}</p>
               </div>
             </div>
           </div>
-		{% endfor %}
+		    {% endfor %}
         </div>
       </div>
     </div>
