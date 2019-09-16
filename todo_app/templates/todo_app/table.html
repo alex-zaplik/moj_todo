@@ -19,21 +19,29 @@
       </div>
       <div class="col-lg-9">
         <div class="row">
-		    {% for task in task_list %}
-          <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card h-100">
-              <div class="card-body">
-                <h4 class="card-title">
-                  <a href="#">{{ task.name }}</a>
-                </h4>
-                {% if task.deadline %}
-                <h5>{{ task.deadline }}</h5>
-                {% endif %}
-                <p class="card-text">{{ task.description }}</p>
+          {% for col in column_list %}
+          <div class="card mx-2">
+            <div class="card-header">
+              {{ col.name }}
+            </div>
+            <div class="card-body p-2">
+              {% for task in task_list %}
+              {% if task.column == col %}
+              <div class="card {% if not forloop.last %}mb-2{% endif %}">
+                <div class="card-body">
+                  <h5 class="card-title">{{ task.name }}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">Deadline: {{ task.deadline }}</h6>
+                  <p class="card-text">{{ task.description }}</p>
+                  <a href="#" class="card-link">Edit</a>
+                  {% if not forloop.parentloop.first %}<a href="#" class="card-link ml-2">Move left</a>{% endif %}
+                  {% if not forloop.parentloop.last %}<a href="#" class="card-link ml-2">Move right</a>{% endif %}
+                </div>
               </div>
+              {% endif %}
+              {% endfor %}
             </div>
           </div>
-		    {% endfor %}
+          {% endfor %}
         </div>
       </div>
     </div>

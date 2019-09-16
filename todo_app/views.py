@@ -20,7 +20,7 @@ def table(request, pk):
     """
 
     # TODO: Only show tables that belong to the user
-    # TODO: Ignoring columns now, but that has to change
-    task_list = Task.objects.filter(column__table__pk=pk).order_by('-deadline')[:5]
-    context = {'task_list': task_list}
+    column_list = Column.objects.filter(table__pk=pk)
+    task_list = Task.objects.filter(column__table__pk=pk).order_by('-deadline')
+    context = {'task_list': task_list, 'column_list': column_list}
     return render(request, 'todo_app/table.html', context)
