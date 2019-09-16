@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,36 +10,84 @@
   <meta name="author" content="">
 
   <title>Shop Homepage - Start Bootstrap Template</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'todo_app/style.css' %}">
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body style="padding-top: 56px;">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-9">
-        <h1 class="my-4">Nasze TO-DO</h1>
-        <h1 class="my-4">Your tables</h1>
+<body>
+  <div class="wrapper">
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+      <div class="sidebar-header">
+        <h3>Deadline is coming!</h3>
       </div>
-      <div class="col-lg-9">
+
+      {% for tab in table_list %}
+      <ul class="list-unstyled components">
+        <h5>{{ tab.name }}</h5>
+        {% for task in task_list %}
+          {% if task.column.table == tab and task.deadline %}
+          <li>
+            <p>{{ task.name }}</p>
+          </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+      {% endfor %}
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+
+          <button type="button" id="sidebarCollapse" class="btn btn-info">
+            <i class="fas fa-align-left"></i>
+            <span>Powiadomienia</span>
+          </button>
+        </div>
+      </nav>
+      <div class="container">
         <div class="row">
-		{% for tab in table_list %}
-          <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card h-100">
-              <div class="card-body">
-                <h4 class="card-title">
-                  <a href="{% url 'table' tab.id %}">{{ tab.name }}</a>
-                </h4>
+          <div class="col-lg-9">
+            <h1 class="my-4">Nasze TO-DO</h1>
+            <h1 class="my-4">Your tables</h1>
+          </div>
+          <div class="col-lg-9">
+            <div class="row">
+          {% for tab in table_list %}
+              <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h4 class="card-title">
+                      <a href="{% url 'table' tab.id %}">{{ tab.name }}</a>
+                    </h4>
+                  </div>
+                </div>
               </div>
+          {% endfor %}
             </div>
           </div>
-		{% endfor %}
         </div>
       </div>
     </div>
   </div>
 
+  <!-- jQuery CDN - Slim version (=without AJAX) -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <!-- Popper.JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
   <!-- Bootstrap core JavaScript -->
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+      });
+    });
+  </script>
 
 </body>
 

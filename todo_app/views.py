@@ -9,7 +9,8 @@ def index(request):
     
     # TODO: Only get tables that belong to the user
     table_list = Table.objects.all()
-    context = {'table_list': table_list}
+    task_list = Task.objects.all()
+    context = {'table_list': table_list, 'task_list' : task_list}
     return render(request, 'todo_app/tables.html', context)
 
 
