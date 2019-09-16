@@ -22,16 +22,20 @@
       </div>
 
       {% for tab in table_list %}
-      <ul class="list-unstyled components">
-        <h5>{{ tab.name }}</h5>
-        {% for task in task_list %}
-          {% if task.column.table == tab and task.deadline %}
-          <li>
-            <p>{{ task.name }}</p>
-          </li>
-          {% endif %}
-        {% endfor %}
-      </ul>
+      <div class="card bg-transparent my-0 border-bottom-0" style="border-radius: 0;">
+        <div class="card-body" style="padding: 0;">
+          <div class="card-header">
+            <h5 class="m-0"><a href="{% url 'table' tab.id %}" class="text-white">{{ tab.name }}</a></h5>
+          </div>
+          <ul class="list-group list-group-flush py-2">
+            {% for task in task_list %}
+            {% if task.column.table == tab and task.is_near_to_deadline %}
+            <li class="mx-auto">{{ task.name }}<br/>{{ task.deadline }}</li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
       {% endfor %}
     </nav>
 

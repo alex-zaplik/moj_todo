@@ -5,5 +5,5 @@ from . import views
 
 urlpatterns = [
     path('signup/', views.SignUp, name='signup'),
-    path(r'^login/$', auth_views.LoginView, name='login'),
+    path('login/', auth_views.LoginView, name='login'),
 ]
