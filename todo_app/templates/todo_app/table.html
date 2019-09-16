@@ -24,10 +24,9 @@
             <div class="card-header">
               {{ col.name }}
             </div>
-            <div class="card-body p-2">
-              {% for task in task_list %}
-              {% if task.column == col %}
-              <div class="card {% if not forloop.last %}mb-2{% endif %}">
+            <div class="card-body text-center p-2">
+              {% for task in col.task_set.all %}
+              <div class="card text-left {% if forloop.last %}mb-0{% else %}mb-2{% endif %}">
                 <div class="card-body">
                   <h5 class="card-title">{{ task.name }}</h5>
                   <h6 class="card-subtitle mb-2 {% if task.is_near_to_deadline %}text-danger{% else %}text-muted{% endif %}">Deadline: {{ task.deadline }}</h6>
@@ -37,11 +36,14 @@
                   {% if not forloop.parentloop.last %}<a href="#" class="card-link ml-2">Move right</a>{% endif %}
                 </div>
               </div>
-              {% endif %}
               {% endfor %}
+              <a href="#" class="btn btn-primary mx-auto mt-2">New task</a>
             </div>
           </div>
           {% endfor %}
+          <div>
+            <a href="#" class="btn btn-primary">New column</a>
+          </div>
         </div>
       </div>
     </div>
