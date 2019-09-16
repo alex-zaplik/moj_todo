@@ -22,8 +22,8 @@
       </div>
 
       {% for tab in table_list %}
-      <div class="card bg-transparent my-0 border-bottom-0" style="border-radius: 0;">
-        <div class="card-body" style="padding: 0;">
+      <div class="card bg-transparent my-0 border-bottom-0 rounded-0">
+        <div class="card-body p-0">
           <div class="card-header">
             <h5 class="m-0"><a href="{% url 'table' tab.id %}" class="text-white">{{ tab.name }}</a></h5>
           </div>
