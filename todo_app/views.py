@@ -4,7 +4,8 @@ from django.views.generic import CreateView
 from django.views.decorators.http import require_POST
 
 from .models import Table, Column, Task
-from .forms import ColumnForm
+from .forms import ColumnForm, TaskFrom
+
 
 def index(request):
     """
@@ -14,6 +15,7 @@ def index(request):
     # TODO: Only get tables that belong to the user
     table_list = Table.objects.all()
     task_list = Task.objects.all()
+
     context = {'table_list': table_list, 'task_list' : task_list}
     return render(request, 'todo_app/tables.html', context)
 
@@ -25,9 +27,11 @@ def table(request, pk):
 
     # TODO: Only show tables that belong to the user
     column_form = ColumnForm()
+    task_form = TaskFrom()
     column_list = Column.objects.filter(table__pk=pk)
     task_list = Task.objects.filter(column__table__pk=pk).order_by('-deadline')
-    context = {'task_list': task_list, 'column_list': column_list, 'column_form': column_form, 'tab_id': pk}
+
+    context = {'column_list': column_list, 'column_form': column_form, 'task_form': task_form, 'tab_id': pk}
     return render(request, 'todo_app/table.html', context)
 
 
@@ -41,6 +45,38 @@ def add_column(request, pk):
     if request.method == 'POST':
         column = Column(table=Table.objects.get(pk=pk))
         form = ColumnForm(request.POST, instance=column)
+        if form.is_valid():
+            form.save()
+
+    return redirect(reverse('table', kwargs={'pk': pk}))
+
+
+@require_POST
+def add_task(request, pk):
+    """
+    A temporary view that handles POST method parameters
+    Source: TaskForm
+    """
+
+    if request.method == 'POST':
+        # TODO: Check if the key is present
+        form = TaskFrom(request.POST, instance=Task(column_id=int(request.POST.get('column'))))
+        if form.is_valid():
+            form.save()
+
+    return redirect(reverse('table', kwargs={'pk': pk}))
+
+
+@require_POST
+def edit_task(request, pk):
+    """
+    A temporary view that handles POST method parameters
+    Source: TaskForm
+    """
+
+    if request.method == 'POST' and False: # TODO: For now this request is ignored
+        # TODO: Check if the keys are present
+        form = TaskFrom(request.POST, instance=Task(id=int(request.POST.get('task')), column_id=int(request.POST.get('column'))))
         if form.is_valid():
             form.save()
 

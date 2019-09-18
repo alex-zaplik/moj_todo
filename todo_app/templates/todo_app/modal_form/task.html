@@ -1,0 +1,15 @@
+{% extends "todo_app/modal_form/modal_form.html" %}
+
+{% block extras %}<input type="hidden" id="id_column" name="column" value="">{% endblock %}
+
+{% block script %}
+<script>
+  $('#{{ modal_id }}').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var value = button.data('column')
+    var modal = $(this)
+    // console.log(value)
+    $("#id_column").val(value);
+  })
+</script>
+{% endblock %}

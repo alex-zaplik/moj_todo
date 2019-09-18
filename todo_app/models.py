@@ -57,6 +57,9 @@ class Task(NamedModel):
         website.
         """
 
-        now = timezone.now()
-        near = now + datetime.timedelta(days=1) >= self.deadline
-        return near and not self.done
+        if self.deadline:
+            now = timezone.now()
+            near = now + datetime.timedelta(days=1) >= self.deadline
+            return near and not self.done
+        else:
+            return False

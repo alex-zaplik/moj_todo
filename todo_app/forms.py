@@ -5,3 +5,9 @@ class ColumnForm(ModelForm):
 	class Meta:
 		model = Column
 		exclude = ['table']
+
+
+class TaskFrom(ModelForm):
+	class Meta:
+		model = Task
+		exclude = ['column']

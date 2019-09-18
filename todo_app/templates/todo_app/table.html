@@ -11,62 +11,38 @@
   <title>Shop Homepage - Start Bootstrap Template</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body style="padding-top: 56px;">
+<body>  
   <div class="container">
+    <div class="col-lg-9">
+      <h1 class="my-4">Nasze TO-DO</h1>
+    </div>
     <div class="row">
-      <div class="col-lg-9">
-        <h1 class="my-4">Nasze TO-DO</h1>
-      </div>
-      <div class="col-lg-9">
-        <div class="row">
-          {% for col in column_list %}
-          <div class="card mx-2">
-            <div class="card-header">
-              {{ col.name }}
-            </div>
-            <div class="card-body text-center p-2">
-              {% for task in col.task_set.all %}
-              <div class="card text-left {% if forloop.last %}mb-0{% else %}mb-2{% endif %}">
-                <div class="card-body">
-                  <h5 class="card-title">{{ task.name }}</h5>
-                  <h6 class="card-subtitle mb-2 {% if task.is_near_to_deadline %}text-danger{% else %}text-muted{% endif %}">Deadline: {{ task.deadline }}</h6>
-                  <p class="card-text">{{ task.description }}</p>
-                  <a href="#" class="card-link">Edit</a>
-                  {% if not forloop.parentloop.first %}<a href="#" class="card-link ml-2">Move left</a>{% endif %}
-                  {% if not forloop.parentloop.last %}<a href="#" class="card-link ml-2">Move right</a>{% endif %}
-                </div>
-              </div>
-              {% endfor %}
-              <a href="#" class="btn btn-primary mx-auto mt-2">New task</a>
+      {% for col in column_list %}
+      <div class="card mx-2">
+        <div class="card-header">
+          {{ col.name }}
+        </div>
+        <div class="card-body text-center p-2">
+          {% for task in col.task_set.all %}
+          <div class="card text-left {% if forloop.last %}mb-0{% else %}mb-2{% endif %}">
+            <div class="card-body">
+              <h5 class="card-title">{{ task.name }}</h5>
+              {% if task.deadline %}<h6 class="card-subtitle mb-2 {% if task.is_near_to_deadline %}text-danger{% else %}text-muted{% endif %}">Deadline: {{ task.deadline }}</h6>{% endif %}
+              <p class="card-text">{{ task.description }}</p>
+              <button type="button" class="btn btn-link p-0" data-toggle="modal" data-target="#taskEditModal" data-task="{{ task.id }}">Edit</button>
+              {% if not forloop.parentloop.first %}<button type="button" class="btn btn-link p-0 ml-2">Move left</a>{% endif %}
+              {% if not forloop.parentloop.last %}<button type="button" class="btn btn-link p-0 ml-2">Move right</a>{% endif %}
             </div>
           </div>
           {% endfor %}
           <div>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#columnModal">New column</button>
+            <button type="button" class="btn btn-primary mx-auto mt-2" data-toggle="modal" data-target="#taskModal" data-column="{{ col.id }}">New task</button>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- New column modal -->
-  <div class="modal fade" id="columnModal" tabindex="-1" role="dialog" aria-labelledby="columnModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="columnModalLabel">New column</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          {% load crispy_forms_tags %}
-          <form action="{% url 'column_save' tab_id %}" method="post">
-            {% csrf_token %}
-            {{ column_form|crispy }}
-            <input type="submit" value="Save">
-          </form>
-        </div>
+      {% endfor %}
+      <div>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#columnModal">New column</button>
       </div>
     </div>
   </div>
@@ -78,6 +54,14 @@
   <!-- Bootstrap core JavaScript -->
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+  <!-- New column modal -->
+  {% url 'column_save' tab_id as columnActionUrl %}
+  {% include "todo_app/modal_form/modal_form.html" with modal_name="New column" modal_id="columnModal" action=columnActionUrl form=column_form %}
+
+  <!-- New task modal -->
+  {% url 'task_save' tab_id as taskActionUrl %}
+  {% include "todo_app/modal_form/task.html" with modal_name="New task" modal_id="taskModal" action=taskActionUrl form=task_form columd_id="id_column" %}
 
 </body>
 
