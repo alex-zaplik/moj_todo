@@ -60,7 +60,12 @@
           </button>
         </div>
         <div class="modal-body">
-          Form goes here
+          {% load crispy_forms_tags %}
+          <form method="post">
+            {% csrf_token %}
+            {{ column_form|crispy }}
+            <input type="submit" name="column_save" value="Save">
+          </form>
         </div>
       </div>
     </div>
