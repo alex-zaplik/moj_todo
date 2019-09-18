@@ -61,10 +61,10 @@
         </div>
         <div class="modal-body">
           {% load crispy_forms_tags %}
-          <form method="post">
+          <form action="{% url 'column_save' tab_id %}" method="post">
             {% csrf_token %}
             {{ column_form|crispy }}
-            <input type="submit" name="column_save" value="Save">
+            <input type="submit" value="Save">
           </form>
         </div>
       </div>

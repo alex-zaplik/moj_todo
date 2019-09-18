@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Column
+from .models import Task, Column
 
 class ColumnForm(ModelForm):
 	class Meta:
