@@ -9,11 +9,10 @@ from .forms import ColumnForm, TaskFrom
 
 def index(request):
     """
-    A simple view that display all tables in the database
+    A simple view that display tables that belong to the user
     """
-    
-    # TODO: Only get tables that belong to the user
-    table_list = Table.objects.all()
+
+    table_list = [x for x in Table.objects.all() if request.user in x.users.all()]
     task_list = Task.objects.all()
 
     context = {'table_list': table_list, 'task_list' : task_list}
@@ -22,16 +21,16 @@ def index(request):
 
 def table(request, pk):
     """
-    A simple view that display all tasks in a table
+    A simple view that display all tasks in a table that belong to the user
     """
-
-    # TODO: Only show tables that belong to the user
-    column_form = ColumnForm()
-    task_form = TaskFrom()
-    column_list = Column.objects.filter(table__pk=pk)
-    task_list = Task.objects.filter(column__table__pk=pk).order_by('-deadline')
-
-    context = {'column_list': column_list, 'column_form': column_form, 'task_form': task_form, 'tab_id': pk}
+    if request.user in Table.objects.get(pk=pk).users.all():
+        column_form = ColumnForm()
+        task_form = TaskFrom()
+        column_list = Column.objects.filter(table__pk=pk)
+        task_list = Task.objects.filter(column__table__pk=pk).order_by('-deadline')
+        context = {'column_list': column_list, 'column_form': column_form, 'task_form': task_form, 'tab_id': pk}
+    else:
+        context = {'column_list': [], 'column_form': None, 'task_form': None, 'tab_id': ""}
     return render(request, 'todo_app/table.html', context)
 
 
