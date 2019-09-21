@@ -32,9 +32,9 @@ def table(request, pk):
         task_form = TaskFrom()
         column_list = Column.objects.filter(table__pk=pk)
         task_list = Task.objects.filter(column__table__pk=pk).order_by('-deadline')
-        context = {'table_remind_list': table_remind_list, 'task_remind_list' : task_remind_list, 'column_list': column_list, 'column_form': column_form, 'task_form': task_form, 'tab_id': pk}
+        context = {'user': request.user, 'table_remind_list': table_remind_list, 'task_remind_list' : task_remind_list, 'column_list': column_list, 'column_form': column_form, 'task_form': task_form, 'tab_id': pk}
     else:
-        context = {'table_remind_list': table_remind_list, 'task_remind_list' : task_remind_list, 'column_list': [], 'column_form': None, 'task_form': None, 'tab_id': ""}
+        context = {'user': request.user, 'table_remind_list': table_remind_list, 'task_remind_list' : task_remind_list, 'column_list': [], 'column_form': None, 'task_form': None, 'tab_id': ""}
     return render(request, 'todo_app/table.html', context)
 
 

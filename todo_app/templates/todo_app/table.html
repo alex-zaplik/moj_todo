@@ -1,12 +1,15 @@
 {% extends "todo_app/main_base.html" %}
 
 {% block content %}
+{% load todo_extra %}
 <div class="container">
     <div class="col-lg-9">
       <h1 class="my-4">Nasze TO-DO</h1>
     </div>
     <div class="row">
       {% for col in column_list %}
+      {% with next=column_list|next_elem:forloop.counter0 %}
+      {% with prev=column_list|prev_elem:forloop.counter0 %}
       <div class="card mx-2">
         <div class="card-header">
           {{ col.name }}
@@ -19,8 +22,8 @@
               {% if task.deadline %}<h6 class="card-subtitle mb-2 {% if task.is_near_to_deadline %}text-danger{% else %}text-muted{% endif %}">Deadline: {{ task.deadline }}</h6>{% endif %}
               <p class="card-text">{{ task.description }}</p>
               <button type="button" class="btn btn-link p-0" data-toggle="modal" data-target="#taskEditModal" data-task="{{ task.id }}">Edit</button>
-              {% if not forloop.parentloop.first %}<button type="button" class="btn btn-link p-0 ml-2">Move left</a>{% endif %}
-              {% if not forloop.parentloop.last %}<button type="button" class="btn btn-link p-0 ml-2">Move right</a>{% endif %}
+              {% if not forloop.parentloop.first %}<button type="button" class="btn btn-link p-0 ml-2 move-button" onclick="moveTask({{ task.id }}, {{ prev.id }})">Move left</a>{% endif %}
+              {% if not forloop.parentloop.last %}<button type="button" class="btn btn-link p-0 ml-2 move-button" onclick="moveTask({{ task.id }}, {{ next.id }})">Move right</a>{% endif %}
             </div>
           </div>
           {% endfor %}
@@ -29,6 +32,8 @@
           </div>
         </div>
       </div>
+      {% endwith %}
+      {% endwith %}
       {% endfor %}
       <div>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#columnModal">New column</button>
@@ -45,4 +50,10 @@
   <!-- New task modal -->
   {% url 'task_save' tab_id as taskActionUrl %}
   {% include "todo_app/modal_form/task.html" with modal_name="New task" modal_id="taskModal" action=taskActionUrl form=task_form columd_id="id_column" %}
+
+  <script>
+    function moveTask(task, target) {
+      console.log("Moving task", task, "to column", target);
+    }
+  </script>
 {% endblock %}
