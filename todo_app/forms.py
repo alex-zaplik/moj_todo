@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, DateTimeField
 from .models import Task, Column
 
 class ColumnForm(ModelForm):
