@@ -58,8 +58,14 @@ a:focus {
 }
 
 #sidebar .sidebar-header {
-    padding: 20px;
+    padding-left: 1.25rem;
     background: #6d7fcc;
+}
+
+#sidebar .sidebar-subheader {
+    padding: .75rem 1.25rem;
+    background: #7386D5;
+    border-top-color: rgba(0, 0, 0, .125)!important;
 }
 
 #sidebar ul.components {

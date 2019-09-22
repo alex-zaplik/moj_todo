@@ -19,10 +19,9 @@
   <div class="wrapper">
     <!-- Sidebar  -->
     <nav id="sidebar">
-      <div class="sidebar-header">
-        <h3>Deadline is coming!</h3>
-      </div>
+      <h2 class="py-4 m-0 sidebar-header"><a href="{% url 'index' %}" class="text-white">mojeTODO</a></h2>
 
+      <h4 class="border-top m-0 sidebar-subheader">Deadlines:</h4>
       {% for tab in table_remind_list %}
       <div class="card bg-transparent my-0 border-bottom-0 rounded-0">
         <div class="card-body p-0">
