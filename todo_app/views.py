@@ -27,15 +27,16 @@ def table(request, pk):
 
     table_remind_list = [x for x in Table.objects.all() if request.user in x.users.all()]
     task_remind_list = Task.objects.all()
+    curr_table = Table.objects.get(pk=pk)
 
-    if request.user in Table.objects.get(pk=pk).users.all():
+    if request.user in curr_table.users.all():
         column_form = ColumnForm()
         task_form = TaskFrom()
         column_list = Column.objects.filter(table__pk=pk)
         task_list = Task.objects.filter(column__table__pk=pk).order_by('-deadline')
-        context = {'user': request.user, 'table_remind_list': table_remind_list, 'task_remind_list' : task_remind_list, 'column_list': column_list, 'column_form': column_form, 'task_form': task_form, 'tab_id': pk}
+        context = {'user': request.user, 'page_title': curr_table.name, 'table_remind_list': table_remind_list, 'task_remind_list' : task_remind_list, 'column_list': column_list, 'column_form': column_form, 'task_form': task_form, 'tab_id': pk}
     else:
-        context = {'user': request.user, 'table_remind_list': table_remind_list, 'task_remind_list' : task_remind_list, 'column_list': [], 'column_form': None, 'task_form': None, 'tab_id': ""}
+        context = {'user': request.user, 'page_title': "Access denied", 'table_remind_list': table_remind_list, 'task_remind_list' : task_remind_list, 'column_list': [], 'column_form': None, 'task_form': None, 'tab_id': ""}
     return render(request, 'todo_app/table.html', context)
 
 
