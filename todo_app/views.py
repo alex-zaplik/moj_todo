@@ -41,7 +41,8 @@ def table(request, pk):
             raise PermissionDenied()
     
         return render(request, 'todo_app/table.html', context)
-    except:
+        
+    except (PermissionDenied, Table.DoesNotExist):
         return redirect(reverse('denied'))
 
 
