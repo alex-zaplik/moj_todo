@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import CreateView
 from django.views.decorators.http import require_POST
+from django.http import JsonResponse
 
 from .models import Table, Column, Task
 from .forms import ColumnForm, TaskFrom
@@ -84,3 +85,34 @@ def edit_task(request, pk):
             form.save()
 
     return redirect(reverse('table', kwargs={'pk': pk}))
+
+
+@require_POST
+def move_task(request):
+    """
+    A view that handles moving a tast to a different column
+    of the same table
+    """
+
+    data = {}
+
+    if request.method == 'POST':
+        # TODO: Check if the keys are present and if no 404 arises
+        task = Task.objects.get(pk=int(request.POST.get('task')))
+        target = Column.objects.get(pk=int(request.POST.get('target')))
+
+        # Checking if the origin and target columns are in the same table
+        if task.column.table == target.table:
+            # Move task
+            task.column = target
+            task.save()
+
+            data['success'] = True
+            data['url'] = reverse('table', kwargs={ 'pk': target.table.pk })
+        else:
+            # Send error
+            data['success'] = True
+            data['msg'] = "The origin and target columns are not the same"
+        
+    return JsonResponse(data)
+            
