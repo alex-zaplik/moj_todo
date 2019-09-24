@@ -13,6 +13,7 @@ class CheckedTableView(View):
 
     not_exist_msg = "Table does not exist"
     not_allowed_msg = "You are not allowed to access this table"
+    checked_prefix = "checked_"
 
     def check_table(self, request, *args, **kwargs):
         assert 'pk' in kwargs
@@ -28,7 +29,7 @@ class CheckedTableView(View):
     def dispatch(self, request, *args, **kwargs):
         if request.method.lower() in self.http_method_names:
             self.check_table(request, *args, **kwargs)
-            handler = getattr(self, "checked_" + request.method.lower(), self.http_method_not_allowed)
+            handler = getattr(self, self.checked_prefix + request.method.lower(), self.http_method_not_allowed)
         else:
             handler = self.http_method_not_allowed
         return handler(request, *args, **kwargs)
@@ -138,7 +139,7 @@ class MoveTaskView(CheckedTableView):
         else:
             # Send error
             data['success'] = True
-            data['msg'] = "The origin and target columns are not the same"
+            data['msg'] = "The origin and target tables are not the same"
         
         return JsonResponse(data)
 
