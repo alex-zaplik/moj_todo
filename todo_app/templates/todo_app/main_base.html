@@ -62,11 +62,14 @@
                 <p class="nav-link m-0">Logged in as <strong>{{ user.username }}</strong></p>
               </li>
               <li class="nav-item active">
-                <a class="btn btn-info" href="{% url 'logout' %}">Log out</a>
+                <a class="btn btn-info" href="{% url 'logout' %}?next={% url 'index' %}">Log out</a>
               </li>
               {% else %}
               <li class="nav-item active">
-                  <a class="btn btn-info" href="{% url 'login' %}">Log in</a>
+                <a class="btn btn-info mr-1" href="{% url 'login' %}?next={% url 'index' %}">Log in</a>
+              </li>
+              <li class="nav-item active">
+                <a class="btn btn-info" href="{% url 'signup' %}?next={% url 'index' %}">Sing up</a>
               </li>
               {% endif %}
             </ul>

@@ -2,30 +2,36 @@
 
 {% block content %}
 <div class="container">
-        <div class="row">
-          <div class="col-lg-9">
-            <h1 class="my-4">Your tables</h1>
-          </div>
-          <div class="col-lg-9">
-            <div class="row">
-              {% for tab in table_list %}
-              <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100">
-                  <div class="card-body">
-                    <h4 class="card-title">
-                      <a href="{% url 'table' tab.id %}">{{ tab.name }}</a>
-                    </h4>
-                  </div>
-                </div>
-              </div>
-              {% endfor %}
-              <div class="col-md-6">
-                <a href="#" class="btn btn-primary">New table</a>
-              </div>
+  <div class="row">
+    {% if user.is_authenticated %}
+    <div class="col-lg-9">
+      <h1 class="my-4">Your tables</h1>
+    </div>
+    <div class="col-lg-9">
+      <div class="row">
+        {% for tab in table_list %}
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h4 class="card-title">
+                <a href="{% url 'table' tab.id %}">{{ tab.name }}</a>
+              </h4>
             </div>
           </div>
         </div>
+        {% endfor %}
+        <div class="col-md-6">
+          <a href="#" class="btn btn-primary">New table</a>
+        </div>
       </div>
+    </div>
+    {% else %}
+    <div class="col-lg-9">
+      <h1 class="my-4">Log in to manage your tables</h1>
+    </div>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}
 
 {% block extras %}
