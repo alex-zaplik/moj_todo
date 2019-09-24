@@ -1,16 +1,12 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.views.generic import CreateView
+from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic.base import TemplateResponseMixin
-from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from django.core.exceptions import PermissionDenied
 
 from .models import Table, Column, Task
 from .forms import ColumnForm, TaskFrom
-
-import urllib.parse
 
 
 class CheckedTableView(View):
@@ -90,7 +86,7 @@ class AddColumnView(CheckedTableView):
         if form.is_valid():
             form.save()
         
-        return redirect(reverse('table', kwargs={'pk': pk}))
+        return redirect(reverse_lazy('table', kwargs={'pk': pk}))
 
 
 class AddTaskView(CheckedTableView):
@@ -113,7 +109,7 @@ class AddTaskView(CheckedTableView):
         if form.is_valid():
             form.save()
 
-        return redirect(reverse('table', kwargs={'pk': pk}))
+        return redirect(reverse_lazy('table', kwargs={'pk': pk}))
 
 
 class MoveTaskView(CheckedTableView):
@@ -138,7 +134,7 @@ class MoveTaskView(CheckedTableView):
             task.save()
 
             data['success'] = True
-            data['url'] = reverse('table', kwargs={ 'pk': target.table.pk })
+            data['url'] = reverse_lazy('table', kwargs={ 'pk': target.table.pk })
         else:
             # Send error
             data['success'] = True
@@ -163,7 +159,7 @@ class EditTaskView(CheckedTableView):
         # if form.is_valid():
         #     form.save()
 
-        return redirect(reverse('table', kwargs={'pk': pk}))
+        return redirect(reverse_lazy('table', kwargs={'pk': pk}))
 
 
 def access_denied(request, exception):
