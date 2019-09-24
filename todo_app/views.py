@@ -10,6 +10,13 @@ from .forms import ColumnForm, TaskFrom
 
 
 class CheckedTableView(View):
+    """
+    This view checks whether a table with the given pk exists
+    and if it does and the user currently logged in has access
+    to it dispatches <checked_prefix>get, <checked_prefix>post, etc
+    otherwise a PermissionDenied exception is raised with 
+    the appropriate message
+    """
 
     not_exist_msg = "Table does not exist"
     not_allowed_msg = "You are not allowed to access this table"
