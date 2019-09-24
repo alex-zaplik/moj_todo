@@ -18,6 +18,9 @@ from django.urls import include, path
 from django.contrib.auth import views as auth_views
 
 
+handler403 = 'todo_app.views.access_denied'
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('todo_app/', include('todo_app.urls')),

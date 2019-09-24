@@ -40,14 +40,12 @@ def table(request, pk):
             task_list = Task.objects.filter(column__table__pk=pk).order_by('-deadline')
             context = {'user': request.user, 'page_title': curr_table.name, 'table_remind_list': table_remind_list, 'task_remind_list' : task_remind_list, 'column_list': column_list, 'column_form': column_form, 'task_form': task_form, 'tab_id': pk}
         else:
-            raise PermissionDenied()
+            raise PermissionDenied("You are not allowed to view this table")
     
         return render(request, 'todo_app/table.html', context)
     
     except Table.DoesNotExist:
-        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("Table does not exist"))
-    except PermissionDenied:
-        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("You are not allowed to view this table"))
+        raise PermissionDenied("Table does not exist")
 
 
 @require_POST
@@ -61,7 +59,7 @@ def add_column(request, pk):
         table = Table.objects.get(pk=pk)
 
         if request.user not in table.users.all():
-            raise PermissionDenied()
+            raise PermissionDenied("You are not allowed to add to this table")
 
         if request.method == 'POST':
             column = Column(table=table)
@@ -72,9 +70,7 @@ def add_column(request, pk):
         return redirect(reverse('table', kwargs={'pk': pk}))
 
     except Table.DoesNotExist:
-        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("Table does not exist"))
-    except PermissionDenied:
-        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("You are not allowed to add to this table"))
+        raise PermissionDenied("Table does not exist")
 
 
 @require_POST
@@ -88,7 +84,7 @@ def add_task(request, pk):
         table = Table.objects.get(pk=pk)
 
         if request.user not in table.users.all():
-            raise PermissionDenied()
+            raise PermissionDenied("You are not allowed to add to this table")
 
         if request.method == 'POST':
             # TODO: Check if the key is present
@@ -105,9 +101,7 @@ def add_task(request, pk):
         return redirect(reverse('table', kwargs={'pk': pk}))
 
     except Table.DoesNotExist:
-        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("Table does not exist"))
-    except PermissionDenied:
-        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("You are not allowed to add to this table"))
+        raise PermissionDenied("Table does not exist")
 
 
 @require_POST
@@ -121,7 +115,7 @@ def edit_task(request, pk):
         table = Table.objects.get(pk=pk)
 
         if request.user not in table.users.all():
-            raise PermissionDenied()
+            raise PermissionDenied("You are not allowed to edit this table")
 
         if request.method == 'POST' and False: # TODO: For now this request is ignored
             # TODO: Check if the keys are present
@@ -132,9 +126,7 @@ def edit_task(request, pk):
         return redirect(reverse('table', kwargs={'pk': pk}))
 
     except Table.DoesNotExist:
-        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("Table does not exist"))
-    except PermissionDenied:
-        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("You are not allowed to edit this table"))
+        raise PermissionDenied("Table does not exist")
 
 
 @require_POST
@@ -155,7 +147,7 @@ def move_task(request):
             # Checking if the origin and target columns are in the same table
             if task.column.table == target.table:
                 if request.user not in target.table.users:
-                    raise PermissionDenied()
+                    raise PermissionDenied("You are not allowed to edit this table")
 
                 # Move task
                 task.column = target
@@ -171,15 +163,13 @@ def move_task(request):
         return JsonResponse(data)    
 
     except Table.DoesNotExist:
-        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("Table does not exist"))
-    except PermissionDenied:
-        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("You are not allowed to edit this table"))
+        raise PermissionDenied("Table does not exist")
 
 
-def access_denied(request):
+def access_denied(request, exception):
     table_list = [x for x in Table.objects.all() if request.user in x.users.all()]
     task_list = Task.objects.all()
 
-    context = {'page_title': "Access denied", 'page_subtitle': request.GET.get('subtitle', ''), 'table_remind_list': table_list, 'task_remind_list' : task_list}
+    context = {'page_title': "Access denied", 'page_subtitle': exception, 'table_remind_list': table_list, 'task_remind_list' : task_list}
 
     return render(request, 'todo_app/access_denied.html', context)
