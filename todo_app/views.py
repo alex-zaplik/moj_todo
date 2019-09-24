@@ -8,6 +8,8 @@ from django.core.exceptions import PermissionDenied
 from .models import Table, Column, Task
 from .forms import ColumnForm, TaskFrom
 
+import urllib.parse
+
 
 def index(request):
     """
@@ -41,9 +43,11 @@ def table(request, pk):
             raise PermissionDenied()
     
         return render(request, 'todo_app/table.html', context)
-        
-    except (PermissionDenied, Table.DoesNotExist):
-        return redirect(reverse('denied'))
+    
+    except Table.DoesNotExist:
+        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("Table does not exist"))
+    except PermissionDenied:
+        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("You are not allowed to view this table"))
 
 
 @require_POST
@@ -67,8 +71,10 @@ def add_column(request, pk):
 
         return redirect(reverse('table', kwargs={'pk': pk}))
 
-    except (PermissionDenied, Table.DoesNotExist):
-        return redirect(reverse('denied'))
+    except Table.DoesNotExist:
+        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("Table does not exist"))
+    except PermissionDenied:
+        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("You are not allowed to add to this table"))
 
 
 @require_POST
@@ -98,8 +104,10 @@ def add_task(request, pk):
 
         return redirect(reverse('table', kwargs={'pk': pk}))
 
-    except (PermissionDenied, Table.DoesNotExist):
-        return redirect(reverse('denied'))
+    except Table.DoesNotExist:
+        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("Table does not exist"))
+    except PermissionDenied:
+        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("You are not allowed to add to this table"))
 
 
 @require_POST
@@ -123,8 +131,10 @@ def edit_task(request, pk):
 
         return redirect(reverse('table', kwargs={'pk': pk}))
 
-    except (PermissionDenied, Table.DoesNotExist):
-        return redirect(reverse('denied'))
+    except Table.DoesNotExist:
+        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("Table does not exist"))
+    except PermissionDenied:
+        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("You are not allowed to edit this table"))
 
 
 @require_POST
@@ -160,8 +170,10 @@ def move_task(request):
             
         return JsonResponse(data)    
 
-    except (PermissionDenied, Table.DoesNotExist):
-        return redirect(reverse('denied'))
+    except Table.DoesNotExist:
+        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("Table does not exist"))
+    except PermissionDenied:
+        return redirect(reverse('denied') + "?subtitle=%s" % urllib.parse.quote("You are not allowed to edit this table"))
 
 
 def access_denied(request):
