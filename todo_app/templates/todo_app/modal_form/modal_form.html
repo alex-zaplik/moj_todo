@@ -1,3 +1,0 @@
-{% extends "todo_app/modal_form/base_modal.html" %}
-
-{% block content %}{% csrf_token %} {% load crispy_forms_tags %} {{ form|crispy }} {% block extras %}{% endblock %}{% endblock %}

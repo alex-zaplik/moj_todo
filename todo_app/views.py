@@ -154,7 +154,7 @@ class EditTaskView(CheckedTable, BSModalUpdateView):
     """
     BSModal view of edit form
     """
-    template_name = 'todo_app/edit_task.html'
+    template_name = 'todo_app/modal/edit_task.html'
     model = Task
     form_class = TaskEditForm
     #success_url = reverse_lazy('index')
