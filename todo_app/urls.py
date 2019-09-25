@@ -7,7 +7,7 @@ urlpatterns = [
     path('<int:pk>/', views.TableView.as_view(), name='table'),
     path('add_column/<int:pk>/', views.AddColumnView.as_view(), name='column_save'),
     path('add_task/<int:pk>/', views.AddTaskView.as_view(), name='task_save'),
-    path('edit_task/<int:pk>/', views.TaskEditView.as_view(), name='task_edit'),
+    path('edit_task/<int:table_pk>/<int:pk>/', views.EditTaskView.as_view(), name='task_edit'),
     path('move_task/<int:pk>/', views.MoveTaskView.as_view(), name='move_task'),
     path('denied/', views.access_denied, name='denied')
 ]

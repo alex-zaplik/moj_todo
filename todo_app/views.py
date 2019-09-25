@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic.base import TemplateResponseMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import JsonResponse
 from django.core.exceptions import PermissionDenied
 
@@ -12,37 +13,32 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 
 
-class CheckedTableView(View):
+class CheckedTable(UserPassesTestMixin):
     """
     This view checks whether a table with the given pk exists
     and if it does and the user currently logged in has access
-    to it dispatches <checked_prefix>get, <checked_prefix>post, etc
-    otherwise a PermissionDenied exception is raised with 
+    to otherwise a PermissionDenied exception is raised with 
     the appropriate message
     """
 
     not_exist_msg = "Table does not exist"
     not_allowed_msg = "You are not allowed to access this table"
-    checked_prefix = "checked_"
 
-    def check_table(self, request, *args, **kwargs):
-        assert 'pk' in kwargs
+    def test_func(self):
+        if 'table_pk' in self.kwargs:
+            pk = self.kwargs['table_pk']
+        else:
+            assert 'pk' in self.kwargs
+            pk = self.kwargs['pk']
 
         try:
-            curr_table = Table.objects.get(pk=kwargs['pk'])
-            if request.user not in curr_table.users.all():
+            curr_table = Table.objects.get(pk=pk)
+            if self.request.user not in curr_table.users.all():
                 raise PermissionDenied(self.not_allowed_msg)
         except Table.DoesNotExist:
             raise PermissionDenied(self.not_exist_msg)
-    
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.method.lower() in self.http_method_names:
-            self.check_table(request, *args, **kwargs)
-            handler = getattr(self, self.checked_prefix + request.method.lower(), self.http_method_not_allowed)
-        else:
-            handler = self.http_method_not_allowed
-        return handler(request, *args, **kwargs)
+        return True
 
 
 class IndexView(TemplateResponseMixin, View):
@@ -60,7 +56,7 @@ class IndexView(TemplateResponseMixin, View):
         return self.render_to_response(context)
 
 
-class TableView(TemplateResponseMixin, CheckedTableView):
+class TableView(TemplateResponseMixin, CheckedTable, View):
     """
     A simple view that display all tasks in a table that belong to the user
     """
@@ -68,7 +64,7 @@ class TableView(TemplateResponseMixin, CheckedTableView):
     template_name = 'todo_app/table.html'
     not_allowed_msg = "You are not allowed to view this table"
 
-    def checked_get(self, request, pk):
+    def get(self, request, pk):
         table_remind_list = [x for x in Table.objects.all() if request.user in x.users.all()]
         task_remind_list = Task.objects.all()
 
@@ -82,7 +78,7 @@ class TableView(TemplateResponseMixin, CheckedTableView):
         return self.render_to_response(context)
 
 
-class AddColumnView(CheckedTableView):
+class AddColumnView(CheckedTable, View):
     """
     A temporary view that handles POST method
     Source: ColumnForm
@@ -90,7 +86,7 @@ class AddColumnView(CheckedTableView):
 
     not_allowed_msg = "You are not allowed to add to this table"
 
-    def checked_post(self, request, pk):
+    def post(self, request, pk):
         table = Table.objects.get(pk=pk)
         column = Column(table=table)
         form = ColumnForm(request.POST, instance=column)
@@ -100,7 +96,7 @@ class AddColumnView(CheckedTableView):
         return redirect(reverse_lazy('table', kwargs={'pk': pk}))
 
 
-class AddTaskView(CheckedTableView):
+class AddTaskView(CheckedTable, View):
     """
     A temporary view that handles POST method
     Source: ColumnForm
@@ -108,7 +104,7 @@ class AddTaskView(CheckedTableView):
 
     not_allowed_msg = "You are not allowed to add to this table"
 
-    def checked_post(self, request, pk):
+    def post(self, request, pk):
         table = Table.objects.get(pk=pk)
         # TODO: Check if the key is present
         column = Column.objects.get(pk=int(request.POST.get('column')))
@@ -123,7 +119,7 @@ class AddTaskView(CheckedTableView):
         return redirect(reverse_lazy('table', kwargs={'pk': pk}))
 
 
-class MoveTaskView(CheckedTableView):
+class MoveTaskView(CheckedTable, View):
     """
     A temporary view that handles POST method
     Source: ColumnForm
@@ -131,7 +127,7 @@ class MoveTaskView(CheckedTableView):
 
     not_allowed_msg = "You are not allowed to move tasks in this table"
 
-    def checked_post(self, request, pk):
+    def post(self, request, pk):
         data = {}
 
         # TODO: Check if the keys are present and if no 404 arises
@@ -154,35 +150,7 @@ class MoveTaskView(CheckedTableView):
         return JsonResponse(data)
 
 
-class EditTaskView(CheckedTableView):
-    """
-    A temporary view that handles POST method
-    Source: ColumnForm
-    """
-
-    not_allowed_msg = "You are not allowed to edit tasks in this table"
-
-    def checked_post(self, request, pk):
-        table = Table.objects.get(pk=pk)
-        # TODO: Check if the keys are present
-        # TODO: Ignored for now, awaiting implementation
-        # form = TaskFrom(request.POST, instance=Task(id=int(request.POST.get('task')), column_id=int(request.POST.get('column'))))
-        # if form.is_valid():
-        #     form.save()
-
-        return redirect(reverse_lazy('table', kwargs={'pk': pk}))
-
-
-def access_denied(request, exception):
-    table_list = [x for x in Table.objects.all() if request.user in x.users.all()]
-    task_list = Task.objects.all()
-
-    context = {'page_title': "Access denied", 'page_subtitle': exception, 'table_remind_list': table_list, 'task_remind_list' : task_list}
-
-    return render(request, 'todo_app/access_denied.html', context)
-
-
-class TaskEditView(BSModalUpdateView):
+class EditTaskView(CheckedTable, BSModalUpdateView):
     """
     BSModal view of edit form
     """
@@ -193,3 +161,12 @@ class TaskEditView(BSModalUpdateView):
     success_message = 'success'
     def get_success_url(self):
         return reverse_lazy('table', args = (self.object.column.table.pk,))
+
+
+def access_denied(request, exception):
+    table_list = [x for x in Table.objects.all() if request.user in x.users.all()]
+    task_list = Task.objects.all()
+
+    context = {'page_title': "Access denied", 'page_subtitle': exception, 'table_remind_list': table_list, 'task_remind_list' : task_list}
+
+    return render(request, 'todo_app/access_denied.html', context)
