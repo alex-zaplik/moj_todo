@@ -189,5 +189,7 @@ class TaskEditView(BSModalUpdateView):
     template_name = 'todo_app/edit_task.html'
     model = Task
     form_class = TaskEditForm
-    success_url = reverse_lazy('index')
+    #success_url = reverse_lazy('index')
     success_message = 'success'
+    def get_success_url(self):
+        return reverse_lazy('table', args = (self.object.column.table.pk,))
