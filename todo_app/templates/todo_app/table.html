@@ -2,6 +2,28 @@
 
 {% block content %}
 {% load todo_extra %}
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+      $(".edit-task").each(function () {
+        $(this).modalForm({
+            formURL: $(this).data('id')
+        });
+      });
+
+
+});
+</script>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+    </div>
+  </div>
+</div>
+
 <div class="container">
     <div class="col-lg-9">
       <h1 class="my-4">{{ page_title }}</h1>
@@ -22,7 +44,7 @@
               <h5 class="card-title">{{ task.name }}</h5>
               {% if task.deadline %}<h6 class="card-subtitle mb-2 {% if task.is_near_to_deadline %}text-danger{% else %}text-muted{% endif %}">Deadline: {{ task.deadline }}</h6>{% endif %}
               <p class="card-text">{{ task.description }}</p>
-              <button type="button" class="btn btn-link p-0" data-toggle="modal" data-target="#taskEditModal" data-task="{{ task.id }}">Edit</button>
+              <button type="button" class="edit-task btn btn-link p-0" data-toggle="modal" data-target="#taskEditModal" data-task="{{ task.id }}" data-id="{% url 'task_edit' task.pk%}">>Edit</button>
               {% if not forloop.parentloop.first %}<button type="button" class="btn btn-link p-0 ml-2 move-button" onclick="moveTask('{% url 'move_task' col.table.id%}', {{ task.id }}, {{ prev.id }})">Move left</a>{% endif %}
               {% if not forloop.parentloop.last %}<button type="button" class="btn btn-link p-0 ml-2 move-button" onclick="moveTask('{% url 'move_task' col.table.id%}', {{ task.id }}, {{ next.id }})">Move right</a>{% endif %}
             </div>

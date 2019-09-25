@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'todo_app',
 	'accounts.apps.AccountsConfig',
     'widget_tweaks',
-    'crispy_forms'
+    'crispy_forms',
+    'bootstrap_modal_forms',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

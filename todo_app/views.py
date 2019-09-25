@@ -6,7 +6,10 @@ from django.http import JsonResponse
 from django.core.exceptions import PermissionDenied
 
 from .models import Table, Column, Task
-from .forms import ColumnForm, TaskFrom
+from .forms import ColumnForm, TaskFrom, TaskEditForm
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
+from django.http import HttpResponse
+from django.template.loader import render_to_string
 
 
 class CheckedTableView(View):
@@ -177,3 +180,14 @@ def access_denied(request, exception):
     context = {'page_title': "Access denied", 'page_subtitle': exception, 'table_remind_list': table_list, 'task_remind_list' : task_list}
 
     return render(request, 'todo_app/access_denied.html', context)
+
+
+class TaskEditView(BSModalUpdateView):
+    """
+    BSModal view of edit form
+    """
+    template_name = 'todo_app/edit_task.html'
+    model = Task
+    form_class = TaskEditForm
+    success_url = reverse_lazy('index')
+    success_message = 'success'

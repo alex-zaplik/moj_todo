@@ -3,6 +3,7 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.urls import reverse_lazy
 
 
 class NamedModel(models.Model):
@@ -28,6 +29,8 @@ class Table(NamedModel):
 
     users = models.ManyToManyField(User)
 
+    def get_absolute_url(self):
+        return reverse_lazy('table', kwargs={'pk': self.pk})
 
 class Column(NamedModel):
     """
@@ -36,6 +39,7 @@ class Column(NamedModel):
     """
 
     table = models.ForeignKey(Table, on_delete=models.CASCADE)
+
 
 
 class Task(NamedModel):
@@ -63,3 +67,4 @@ class Task(NamedModel):
             return near and not self.done
         else:
             return False
+
