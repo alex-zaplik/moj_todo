@@ -93,7 +93,7 @@ class AddColumnView(CheckedTable, View):
         if form.is_valid():
             form.save()
         
-        return redirect(reverse_lazy('table', kwargs={'pk': pk}))
+        return redirect(reverse_lazy('todo_app:table', kwargs={'pk': pk}))
 
 
 class AddTaskView(CheckedTable, View):
@@ -116,7 +116,7 @@ class AddTaskView(CheckedTable, View):
         if form.is_valid():
             form.save()
 
-        return redirect(reverse_lazy('table', kwargs={'pk': pk}))
+        return redirect(reverse_lazy('todo_app:table', kwargs={'pk': pk}))
 
 
 class MoveTaskView(CheckedTable, View):
@@ -141,7 +141,7 @@ class MoveTaskView(CheckedTable, View):
             task.save()
 
             data['success'] = True
-            data['url'] = reverse_lazy('table', kwargs={ 'pk': target.table.pk })
+            data['url'] = reverse_lazy('todo_app:table', kwargs={ 'pk': target.table.pk })
         else:
             # Send error
             data['success'] = True
@@ -160,7 +160,7 @@ class EditTaskView(CheckedTable, BSModalUpdateView):
     #success_url = reverse_lazy('index')
     success_message = 'success'
     def get_success_url(self):
-        return reverse_lazy('table', args = (self.object.column.table.pk,))
+        return reverse_lazy('todo_app:table', args = (self.object.column.table.pk,))
 
 
 def access_denied(request, exception):

@@ -42,7 +42,7 @@
       <div class="card bg-transparent my-0 border-bottom-0 rounded-0">
         <div class="card-body p-0">
           <div class="card-header">
-            <h5 class="m-0"><a href="{% url 'table' tab.id %}" class="text-white">{{ tab.name }}</a></h5>
+            <h5 class="m-0"><a href="{% url 'todo_app:table' tab.id %}" class="text-white">{{ tab.name }}</a></h5>
           </div>
           <ul class="list-group list-group-flush py-2">
             {% for task in task_remind_list %}

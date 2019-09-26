@@ -30,7 +30,7 @@ class Table(NamedModel):
     users = models.ManyToManyField(User)
 
     def get_absolute_url(self):
-        return reverse_lazy('table', kwargs={'pk': self.pk})
+        return reverse_lazy('todo_app:table', kwargs={'pk': self.pk})
 
 class Column(NamedModel):
     """
