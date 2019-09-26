@@ -7,13 +7,10 @@ class ColumnForm(ModelForm):
 		model = Column
 		exclude = ['table']
 
-
 class TaskFrom(ModelForm):
 	class Meta:
 		model = Task
 		exclude = ['column']
-
-
 
 class TaskEditForm(BSModalForm):
     """
