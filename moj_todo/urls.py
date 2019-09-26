@@ -24,6 +24,6 @@ handler403 = 'todo_app.views.access_denied'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('todo_app/', include('todo_app.urls')),
-	path(r'accounts/', include('django.contrib.auth.urls')),
+	#path(r'accounts/', include('django.contrib.auth.urls')),
 	path(r'accounts/', include('accounts.urls')),
 ]

@@ -23,15 +23,16 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
   <!-- jQuery Custom Scroller CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
-    <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+  <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
 
 
 </head>
 <body>
+
   <div class="wrapper">
     <!-- Sidebar  -->
     <nav id="sidebar">
-      <h2 class="py-4 m-0 sidebar-header"><a href="{% url 'index' %}" class="text-white">mojeTODO</a></h2>
+      <h2 class="py-4 m-0 sidebar-header"><a href="{% url 'todo_app:index' %}" class="text-white">mojeTODO</a></h2>
 
       <h4 class="border-top m-0 sidebar-subheader">Deadlines:</h4>
       {% for tab in table_remind_list %}
@@ -74,14 +75,14 @@
                 <p class="nav-link m-0">Logged in as <strong>{{ user.username }}</strong></p>
               </li>
               <li class="nav-item active">
-                <a class="btn btn-info" href="{% url 'logout' %}?next={% url 'index' %}">Log out</a>
+                <a class="btn btn-info" href="{% url 'accounts:logout' %}?next={% url 'todo_app:index' %}">Log out</a>
               </li>
               {% else %}
               <li class="nav-item active">
-                <a class="btn btn-info mr-1" href="{% url 'login' %}?next={% url 'index' %}">Log in</a>
+                <a class="login btn btn-info mr-1">Login</a>
               </li>
               <li class="nav-item active">
-                <a class="btn btn-info" href="{% url 'signup' %}?next={% url 'index' %}">Sing up</a>
+                <a class="signup btn btn-info">Sing up</a>
               </li>
               {% endif %}
             </ul>
@@ -116,6 +117,26 @@
 
     sidebarCollapseButtonTextToggle();
   </script>
+
+
+
+{% block accounts-modals %}
+
+  <!-- Sign-up modal -->
+  {% include "todo_app/modal/empty.html" %}
+  <script>
+    $(document).ready(function() {
+      $(".signup").modalForm({
+        formURL: "{% url 'accounts:signup' %}"
+      });
+      $(".login").modalForm({
+        formURL: "{% url 'accounts:login' %}"
+      });
+    });
+
+  </script>
+
+{% endblock %}
 
 </body>
 

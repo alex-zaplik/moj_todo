@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'todo_app',
-	'accounts.apps.AccountsConfig',
+	'accounts',
     'widget_tweaks',
     'crispy_forms',
     'bootstrap_modal_forms',
@@ -125,3 +125,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Temporary variable to disable users' profiles
+LOGIN_REDIRECT_URL = "todo_app:index"
