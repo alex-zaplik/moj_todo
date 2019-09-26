@@ -14,18 +14,19 @@ class SignUpView(BSModalCreateView):
     A view that displays sign up form in modal
     """
     form_class = CustomUserCreationForm
-    template_name = 'signup.html'
+    template_name = 'login_singup.html'
     success_message = 'Success: Sign up succeeded. You can now Log in.'
     success_url = reverse_lazy('todo_app:index')
+    extra_context = dict(title="Sing up")
 
 class CustomLoginView(BSModalLoginView):
     """
     A view that displays login form in modal
     """
     authentication_form = CustomAuthenticationForm
-    template_name = 'login.html'
+    template_name = 'login_singup.html'
     success_message = 'Success: You were successfully logged in.'
-    extra_context = dict(success_url=reverse_lazy('todo_app:index'))
+    extra_context = dict(success_url=reverse_lazy('todo_app:index'), title="Log in")
 
 class CustomLogoutView(LogoutView):
     """
