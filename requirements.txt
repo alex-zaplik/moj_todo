@@ -6,7 +6,7 @@ bottle-websocket==0.2.9
 cffi==1.12.3
 colorama==0.4.1
 cycler==0.10.0
-Django==2.2.5
+Django==2.2.21
 django-crispy-forms==1.7.2
 django-widget-tweaks==1.4.5
 Eel==0.10.4
